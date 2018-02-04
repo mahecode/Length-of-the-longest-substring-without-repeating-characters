@@ -1,42 +1,35 @@
-#include<stdio.h>
-#include<stdlib.h>
-#include<string.h>
+#include<iostream>
+#include<cstring>
+#include<algorithm>
+using namespace std;
 
-int longestUniqueStr(char *s){
-	int n = strlen(s);
-	int curLen = 1;
-	int maxLen = 1;
-	int prevIndex;
-	int i;
-	int *visited = (int *)malloc(sizeof(int)*50);
-	for(i=0;i<50;i++){
-		visited[i] = -1;
-	}
-	visited[s[0]] = 0;
-	for(i=1;i<n;i++){
-		prevIndex = visited[s[i]];
-		if(prevIndex == -1 || i - curLen > prevIndex){
-			curLen++;
+int lengthLStr(string s){
+	bool flag[256] = {false};
+	int n = s.length();
+	int result = 0;
+	int start =0;
+	for(int i = 0; i< n;i++){
+		char current = s[i];
+		if(flag[current]){
+			result = max(result,i - start);
+			for(int k=start;k<i;k++){
+				if(s[k]==current){
+					start = k + 1;
+					break;
+				}
+				flag[s[k]] = false;
+			}
 		}
 		else{
-			if(maxLen < curLen){
-				maxLen = curLen;
-			}
-			curLen = i - prevIndex;
+			flag[current] = true;
 		}
-		visited[s[i]] = i;
-		
 	}
-	if(curLen > maxLen){
-		maxLen = curLen;
-	}
-	return maxLen;
+	result = max(n - start,result);
+	return result;
 }
-
 int main(){
-	 char str[] = "pwwkew";
-    printf("The input string is %s \n", str);
-    int len = longestUniqueStr(str);
-    printf("The length = %d", len);
-    return 0;
+	string x = "abcabcabcbb";
+	int m = lengthLStr(x);
+	cout << "Length: " << m;
+	return 0;
 }
